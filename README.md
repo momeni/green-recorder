@@ -1,4 +1,6 @@
-# This project is archived, it's no longer under development. As the original developer, the work of maintaining and updating this program takes too much of my time, which I was giving for free, and I am no longer interested in working with things like ffmpeg/wayland/GNOME's screencaster or solving the issues related to them or why they don't work. If you would like to continue development, please feel free to fork the project according to the GPL license.
+## CentOS/RHEL 8
+
+    sudo dnf -y install python2-dbus
 
 # Green Recorder
 
@@ -29,6 +31,11 @@ Green Recorder supports localization. If you want to translate the program into 
 Alternatively, you can open the green-recorder.pot file using programs like PoEdit and start translating.
 
 ## Download
+
+### CentOS/RHEL 8
+
+    sudo yum -y install https://extras.getpagespeed.com/release-latest.rpm
+    sudo yum install green-recorder
 
 ### Ubuntu 18.04/18.10/19.04 or Linux Mint 19/19.1
 
