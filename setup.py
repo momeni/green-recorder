@@ -22,7 +22,12 @@ locales = map(lambda i: ('share/' + i, [i + '/green-recorder.mo', ]), glob('loca
 
 data_files.extend(locales)
 
-install_requires = ['pydbus', 'PyGObject', 'appdirs']
+install_requires = [
+    'pydbus',
+    'PyGObject',
+    'appdirs',
+    'configparser>=3.7.1',
+]
 tests_requires = ["pytest>=4.4.0", "flake8", "pytest-xdist"]
 
 with open("README.md", "r") as fh:

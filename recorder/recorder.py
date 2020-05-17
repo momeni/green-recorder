@@ -15,8 +15,9 @@
 # along with Green Recorder.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import time
 
-from .__about__ import __version__
+from .__about__ import __version__, __copyright__
 
 # Force GDK backend to be X11 because Wayland applications are not allowed to
 # know their window positions, which we need for selecting an area to record!
@@ -31,12 +32,7 @@ from gi.repository import Gtk, Gdk, GLib, AppIndicator3 as appindicator
 from pydbus import SessionBus
 import subprocess, signal, threading, datetime, gettext, locale, sys
 
-try:
-    # Python 3
-    from configparser import ConfigParser
-except ImportError:
-    # Python 2
-    from ConfigParser import SafeConfigParser as ConfigParser
+from configparser import ConfigParser
 
 try:
     # Python 3
@@ -260,7 +256,7 @@ def RecordGnome():
 
 
 def stoprecording(_):
-    subprocess.call(["sleep", "1"])  # Wait ffmpeg.
+    time.sleep(1) # Wait ffmpeg.
     window.present()
 
     playbutton.set_sensitive(True)
@@ -309,7 +305,7 @@ def stoprecording(_):
         subprocess.call(["rm", RecorderAbsPathName + ".tmp"])
 
     window.present()
-    CommandToRun = command.get_text()
+    CommandToRun = command.get_text().replace('$1', RecorderAbsPathName)
     subprocess.Popen([CommandToRun], shell=True)
 
 
@@ -385,11 +381,12 @@ def showabout(self):
 
 # Import the glade file and its widgets.
 builder = Gtk.Builder()
+# TODO: make configurable instead?
 possible_ui_file_locations = [
+    os.path.join(os.getcwd(), "ui", "ui.glade"),
     "/usr/share/green-recorder/ui.glade",
     "/usr/local/share/green-recorder/ui.glade",
     os.path.join(os.path.dirname(__file__), "ui", "ui.glade"),
-    os.path.join(os.getcwd(), "ui", "ui.glade"),
 ]
 for filename in possible_ui_file_locations:
     if os.path.exists(filename):
@@ -455,7 +452,7 @@ followmouseswitch.set_label(_("Follow Mouse"))
 aboutdialog.set_transient_for(window)
 aboutdialog.set_program_name(_("Green Recorder"))
 aboutdialog.set_version(__version__)
-aboutdialog.set_copyright("© 2019 M.Hanny Sabbagh")
+aboutdialog.set_copyright(__copyright__)
 aboutdialog.set_wrap_license(True)
 aboutdialog.set_license(
     "Green Recorder is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nGreen Recorder is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\nSee the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with Green Recorder. If not, see <http://www.gnu.org/licenses/>.")

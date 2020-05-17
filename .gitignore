@@ -8,3 +8,5 @@
 
 /dist/*
 !/dist/green-recorder.spec
+
+/ui/#ui.glade#
