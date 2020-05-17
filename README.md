@@ -20,6 +20,11 @@ By default, On Wayland only, Green Recorder uses the V8 encoder instead of the d
 
 Also, for GIF format, Green Recorder first records the required video as a raw video. And then it generated the GIF image from the raw video. In this way, you'll get an optimized GIF image size which is at least 10x better than the normal ffmpeg recording.
 
+#### Run a command after recording
+
+You can run a command after recording. Put `$1` in place where you want to pass the video's 
+filename to the command, e.g. `/path/to/command $1`.
+
 ### Localization
 
 Green Recorder supports localization. If you want to translate the program into your language, fork the repository on GitHub and create a new file under "po" folder with your language ISO code (like fr.po, de.po, cs.po..). And translate the strings from there.
