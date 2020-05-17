@@ -4,6 +4,7 @@
 /.pytest_cache
 *.pyc
 /locale
+/dist
 
 /dist/*
 !/dist/green-recorder.spec

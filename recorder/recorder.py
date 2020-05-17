@@ -113,7 +113,7 @@ def sendnotification(text, time):
 
 def checkStatus():
     os.system("sleep 3")
-    if os.path.isfile(RecorderAbsPathName) == False:
+    if not os.path.isfile(RecorderAbsPathName):
         window.present()
         sendnotification(_(
             "There seems to be a problem in recording. Try running 'green-recorder' from the command line to see the issue."),
@@ -143,7 +143,6 @@ def recorderindicator():
 
     indicator.set_menu(menu)
     indicator.set_secondary_activate_target(stoprecordingbutton)
-    Gtk.main()
 
 
 def RecordXorg():
@@ -656,4 +655,3 @@ def main():
 # The End of all things.
 if __name__ == "__main__":
     main()
-    print('blah')
