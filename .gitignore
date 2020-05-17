@@ -1,7 +1,9 @@
 /.idea
-/dist
 /venv*
 /*.egg-info
 /.pytest_cache
 *.pyc
 /locale
+
+/dist/*
+!/dist/green-recorder.spec

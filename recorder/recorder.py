@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 # FOSS Project <https://foss-project.com>, 2017, 2018.
@@ -16,6 +15,8 @@
 # along with Green Recorder.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+
+from .__about__ import __version__
 
 # Force GDK backend to be X11 because Wayland applications are not allowed to
 # know their window positions, which we need for selecting an area to record!
@@ -454,7 +455,7 @@ mouseswitch.set_label(_("Show Mouse"))
 followmouseswitch.set_label(_("Follow Mouse"))
 aboutdialog.set_transient_for(window)
 aboutdialog.set_program_name(_("Green Recorder"))
-aboutdialog.set_version("3.2.3")
+aboutdialog.set_version(__version__)
 aboutdialog.set_copyright("© 2019 M.Hanny Sabbagh")
 aboutdialog.set_wrap_license(True)
 aboutdialog.set_license(

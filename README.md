@@ -1,7 +1,3 @@
-## CentOS/RHEL 8
-
-    sudo dnf -y install python2-dbus
-
 # Green Recorder
 
 ![Green Recorder](https://i.ibb.co/b1831W0/Screenshot-from-2019-03-21-12-21-02.png)
@@ -61,8 +57,6 @@ The source code is available to download via: [https://github.com/green-project/
 
     sudo python setup.py install
 
-Make sure you are running it with Python 2. It doesn't work currently with Python 3.
-    
 ## License
 
 The program is released under GPL 3.
