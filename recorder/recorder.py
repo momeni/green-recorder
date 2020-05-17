@@ -46,6 +46,11 @@ confDir = os.path.join(GLib.get_user_config_dir(), 'green-recorder/')
 confFile = os.path.join(confDir + "config.ini")
 config = ConfigParser()
 
+from timeit import default_timer as timer
+
+recording_time_start = None
+recording_time_end = None
+
 if not os.path.exists(confDir):
     os.makedirs(confDir)
 
@@ -59,6 +64,7 @@ else:
     config.add_section('Options')
     config.set('Options', 'frames', '30')
     config.set('Options', 'delay', '0')
+    config.set('Options', 'discard', '10')
     config.set('Options', 'folder', "file://" + VideosFolder)
     config.set('Options', 'command', '')
     config.set('Options', 'filename', '')
@@ -259,7 +265,24 @@ def stoprecording(_):
     time.sleep(1) # Wait ffmpeg.
     window.present()
 
-    playbutton.set_sensitive(True)
+    discard = False
+    global recording_time_start, recording_time_end, discard_adjustment
+
+    if not recording_time_start:
+        print('We were not recording...')
+
+    recording_time = timer() - recording_time_start
+
+    if recording_time  < discard_adjustment.get_value():
+        print('Shorter than ' + str(discard_adjustment.get_value()) + ' secs, discarding')
+        discard = True
+        # nothing to play and nothing to stop
+        stopbutton.set_sensitive(False)
+    else:
+        print('Recording time ' + str(recording_time) + ' secs. Not too short, saved')
+        # TODO save indicator and make sensitive on save only
+        playbutton.set_sensitive(True)
+    recording_time_start = None
 
     try:
         global areaaxis, WindowXAxis, WindowYAxis, WindowWidth, WindowHeight
@@ -284,14 +307,21 @@ def stoprecording(_):
         except Exception as e:
             print(e)
 
-        if videoswitch.get_active() == True and audioswitch.get_active() == True:
+        if discard:
+            if videoswitch.get_active():
+                os.remove(RecorderAbsPathName)
+            if audioswitch.get_active():
+                os.remove("/tmp/Green-recorder-tmp.mkv")
+            return window.present()
+
+        if videoswitch.get_active() and audioswitch.get_active():
             m = subprocess.call(
                 ["ffmpeg", "-i", RecorderFullPathName, "-i", "/tmp/Green-recorder-tmp.mkv", "-c",
                  "copy", "/tmp/Green-Recorder-Final." + formatchooser.get_active_id(), "-y"])
             k = subprocess.Popen(
                 ["mv", "/tmp/Green-Recorder-Final." + formatchooser.get_active_id(),
                  RecorderAbsPathName])
-        elif videoswitch.get_active() == False and audioswitch.get_active() == True:
+        elif not videoswitch.get_active() and audioswitch.get_active():
             k = subprocess.Popen(["mv", "/tmp/Green-recorder-tmp.mkv", RecorderAbsPathName])
 
     if formatchooser.get_active_id() == "gif":
@@ -305,12 +335,15 @@ def stoprecording(_):
         subprocess.call(["rm", RecorderAbsPathName + ".tmp"])
 
     window.present()
+
     CommandToRun = command.get_text().replace('$1', RecorderAbsPathName)
     subprocess.Popen([CommandToRun], shell=True)
 
 
 def record():
     global RecorderFullPathName  # grab the path
+    global recording_time_start
+    recording_time_start = timer()
     RecorderFullPathName = unquote(
         folderchooser.get_uri() + '/' + filename.get_text() + '.' + formatchooser.get_active_id())
 
@@ -422,6 +455,7 @@ audiosourcelabel = builder.get_object("audiosourcelabel")
 delayadjustment = builder.get_object("adjustment1")
 framesadjustment = builder.get_object("adjustment2")
 delayprefadjustment = builder.get_object("adjustment3")
+discard_adjustment = builder.get_object("discard_adjustment")
 playbutton = builder.get_object("playbutton")
 videoswitch = builder.get_object("videoswitch")
 audioswitch = builder.get_object("audioswitch")
@@ -472,6 +506,7 @@ audiosourcelabel.set_label(_("Audio Input Source:"))
 areachooser.connect("delete-event", hide_on_delete)
 frames.set_value(int(config.get('Options', 'frames')))
 delay.set_value(int(config.get('Options', 'delay')))
+discard_adjustment.set_value(int(config.get('Options', 'discard')))
 filename.set_text(config.get('Options', 'filename'))
 folderchooser.set_uri(config.get('Options', 'folder'))
 videoswitch.set_active(config.getboolean('Options', 'videocheck'))
@@ -577,6 +612,11 @@ class Handler:
         with open(confFile, 'w+') as newconfFile:
             config.write(newconfFile)
 
+    def discard_changed(self, GtkSpinButton):
+        config.set('Options', 'discard', str(int(float(discard_adjustment.get_value()))))
+        global confFile
+        with open(confFile, 'w+') as newconfFile:
+            config.write(newconfFile)
 
     def filenamechanged(self, GtkEntry):
         config.set('Options', 'filename', unquote(filename.get_text()))
