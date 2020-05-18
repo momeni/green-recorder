@@ -32,7 +32,12 @@ from gi.repository import Gtk, Gdk, GLib, AppIndicator3 as appindicator
 from pydbus import SessionBus
 import subprocess, signal, threading, datetime, gettext, locale, sys
 
-from configparser import ConfigParser
+try:
+    # Python 3
+    from configparser import ConfigParser
+except ImportError:
+    # Python 2
+    from ConfigParser import SafeConfigParser as ConfigParser
 
 try:
     # Python 3

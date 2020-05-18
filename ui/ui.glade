@@ -429,7 +429,6 @@
                     <property name="tooltip_text" translatable="yes">Don't save records with duration less than this number of seconds</property>
                     <property name="max_width_chars">2</property>
                     <property name="text" translatable="yes">30</property>
-                    <property name="show_emoji_icon">True</property>
                     <property name="adjustment">discard_adjustment</property>
                     <property name="value">5</property>
                     <signal name="value-changed" handler="discard_changed" swapped="no"/>
