@@ -6,8 +6,13 @@
     <property name="can_focus">False</property>
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
+    <property name="program_name">Green Recorder</property>
+    <property name="comments" translatable="yes">A simple screen recorder for Linux desktop. Supports Wayland &amp; Xorg.</property>
+    <property name="website">https://github.com/dvershinin/green-recorder</property>
+    <property name="website_label" translatable="yes">GitHub</property>
+    <property name="license" translatable="yes">Green Recorder is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nGreen Recorder is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\nSee the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with Green Recorder. If not, see &lt;http://www.gnu.org/licenses/&gt;.</property>
     <property name="logo_icon_name">green-recorder</property>
-    <property name="license_type">gpl-3-0</property>
+    <property name="wrap_license">True</property>
     <child>
       <placeholder/>
     </child>
@@ -58,16 +63,6 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkImage" id="image3">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-media-play</property>
-  </object>
-  <object class="GtkImage" id="image5">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-media-stop</property>
-  </object>
   <object class="GtkMenu" id="menu1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -75,8 +70,20 @@
       <object class="GtkMenuItem" id="item2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="label" translatable="yes">About</property>
+        <signal name="activate" handler="show_about" swapped="no"/>
       </object>
     </child>
+  </object>
+  <object class="GtkImage" id="stock-gtk-media-play">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-media-play</property>
+  </object>
+  <object class="GtkImage" id="stock-gtk-media-stop">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-media-stop</property>
   </object>
   <object class="GtkWindow" id="window1">
     <property name="visible">True</property>
@@ -107,8 +114,8 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="image">image5</property>
-            <property name="relief">none</property>
+            <property name="image">stock-gtk-media-stop</property>
+            <property name="always_show_image">True</property>
             <signal name="clicked" handler="stoprecordingclicked" swapped="no"/>
           </object>
           <packing>
@@ -120,8 +127,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="image">image3</property>
-            <property name="relief">none</property>
+            <property name="image">stock-gtk-media-play</property>
             <property name="always_show_image">True</property>
             <signal name="clicked" handler="playbuttonclicked" swapped="no"/>
           </object>
@@ -175,6 +181,7 @@
                 <property name="margin_right">5</property>
                 <property name="margin_top">5</property>
                 <property name="margin_bottom">5</property>
+                <property name="placeholder_text" translatable="yes">File Name..</property>
                 <signal name="changed" handler="filenamechanged" swapped="no"/>
               </object>
               <packing>
@@ -216,6 +223,14 @@
             <property name="margin_right">10</property>
             <property name="margin_top">5</property>
             <property name="margin_bottom">5</property>
+            <items>
+              <item id="mkv" translatable="yes">MKV (Matroska multimedia container format)</item>
+              <item id="avi" translatable="yes">AVI (Audio Video Interleaved)</item>
+              <item id="mp4" translatable="yes">MP4 (MPEG-4 Part 14)</item>
+              <item id="wmv" translatable="yes">WMV (Windows Media Video)</item>
+              <item id="gif" translatable="yes">GIF (Graphics Interchange Format)</item>
+              <item id="nut" translatable="yes">NUT (NUT Recording Format)</item>
+            </items>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -233,7 +248,7 @@
             <property name="homogeneous">True</property>
             <child>
               <object class="GtkButton" id="button4">
-                <property name="label" translatable="yes">button</property>
+                <property name="label" translatable="yes">Select a Window</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -251,7 +266,7 @@
             </child>
             <child>
               <object class="GtkButton" id="button5">
-                <property name="label" translatable="yes">button</property>
+                <property name="label" translatable="yes">Select an Area</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -292,7 +307,7 @@
                 <property name="column_homogeneous">True</property>
                 <child>
                   <object class="GtkCheckButton" id="videoswitch">
-                    <property name="label" translatable="yes">checkbutton</property>
+                    <property name="label" translatable="yes">Record Video</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -306,7 +321,7 @@
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="audioswitch">
-                    <property name="label" translatable="yes">checkbutton</property>
+                    <property name="label" translatable="yes">Record Audio</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -320,7 +335,7 @@
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="mouseswitch">
-                    <property name="label" translatable="yes">checkbutton</property>
+                    <property name="label" translatable="yes">Show Mouse</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -334,7 +349,7 @@
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="followmouseswitch">
-                    <property name="label" translatable="yes">checkbutton</property>
+                    <property name="label" translatable="yes">Follow Mouse</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -362,7 +377,7 @@
                   <object class="GtkLabel" id="label2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">label</property>
+                    <property name="label" translatable="yes">Frames:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -388,7 +403,7 @@
                   <object class="GtkLabel" id="label3">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">label</property>
+                    <property name="label" translatable="yes">Delay:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -468,7 +483,7 @@
                 <property name="margin_bottom">5</property>
                 <property name="hexpand">True</property>
                 <property name="vexpand">True</property>
-                <property name="placeholder_text" translatable="yes">echo $1</property>
+                <property name="placeholder_text" translatable="yes">Enter your command here..</property>
                 <signal name="changed" handler="commandchanged" swapped="no"/>
               </object>
               <packing>
@@ -482,7 +497,7 @@
                 <property name="can_focus">False</property>
                 <property name="margin_top">5</property>
                 <property name="margin_bottom">5</property>
-                <property name="label" translatable="yes">label</property>
+                <property name="label" translatable="yes">Run Command After Recording:</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -495,7 +510,7 @@
                 <property name="can_focus">False</property>
                 <property name="margin_top">5</property>
                 <property name="margin_bottom">5</property>
-                <property name="label" translatable="yes">label</property>
+                <property name="label" translatable="yes">Audio Input Source:</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -535,7 +550,8 @@
       <object class="GtkHeaderBar" id="headerbar2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="has_subtitle">False</property>
+        <property name="title" translatable="yes">Area Chooser</property>
+        <property name="subtitle" translatable="yes">Choose recording area on your screen</property>
         <property name="show_close_button">True</property>
         <child>
           <object class="GtkButton" id="areasettings">

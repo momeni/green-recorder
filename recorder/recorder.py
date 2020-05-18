@@ -32,6 +32,7 @@ from gi.repository import Gtk, Gdk, GLib, AppIndicator3 as appindicator
 from pydbus import SessionBus
 import subprocess, signal, threading, datetime, gettext, locale, sys
 
+# long story short, "configparser" Python 2 backports package is no good because it strips init py
 try:
     # Python 3
     from configparser import ConfigParser
@@ -423,11 +424,6 @@ def hide_on_delete(widget, event):
     return True
 
 
-def showabout(self):
-    aboutdialog.run()
-    aboutdialog.hide()
-
-
 # Import the glade file and its widgets.
 builder = Gtk.Builder()
 # TODO: make configurable instead?
@@ -458,16 +454,8 @@ recordbutton = builder.get_object("recordbutton")
 stopbutton = builder.get_object("stopbutton")
 windowgrabbutton = builder.get_object("button4")
 areagrabbutton = builder.get_object("button5")
-frametext = builder.get_object("label2")
-delaytext = builder.get_object("label3")
-commandtext = builder.get_object("label6")
 frames = builder.get_object("frames")
 delay = builder.get_object("delay")
-frameslabel = builder.get_object("frameslabel")
-delaylabel = builder.get_object("delaylabel")
-folderlabel = builder.get_object("folderlabel")
-commandlabel = builder.get_object("commandlabel")
-audiosourcelabel = builder.get_object("audiosourcelabel")
 delayadjustment = builder.get_object("adjustment1")
 framesadjustment = builder.get_object("adjustment2")
 delayprefadjustment = builder.get_object("adjustment3")
@@ -477,48 +465,20 @@ videoswitch = builder.get_object("videoswitch")
 audioswitch = builder.get_object("audioswitch")
 mouseswitch = builder.get_object("mouseswitch")
 followmouseswitch = builder.get_object("followmouseswitch")
-aboutmenuitem = builder.get_object("item2")
-aboutmenuitem.set_label(_("About"))
-aboutmenuitem.connect("activate", showabout)
 
 # Assign the texts to the interface
 window.set_title(_("Green Recorder"))
 areachooser.set_name("AreaChooser")
 
 window.connect("delete-event", Gtk.main_quit)
-filename.set_placeholder_text(_("File Name.."))
-command.set_placeholder_text(_("Enter your command here.."))
-formatchooser.append("mkv", _("MKV (Matroska multimedia container format)"))
-formatchooser.append("avi", _("AVI (Audio Video Interleaved)"))
-formatchooser.append("mp4", _("MP4 (MPEG-4 Part 14)"))
-formatchooser.append("wmv", _("WMV (Windows Media Video)"))
-formatchooser.append("gif", _("GIF (Graphics Interchange Format)"))
-formatchooser.append("nut", _("NUT (NUT Recording Format)"))
 formatchooser.set_active(0)
-videoswitch.set_label(_("Record Video"))
-audioswitch.set_label(_("Record Audio"))
-mouseswitch.set_label(_("Show Mouse"))
-followmouseswitch.set_label(_("Follow Mouse"))
 aboutdialog.set_transient_for(window)
-aboutdialog.set_program_name(_("Green Recorder"))
 aboutdialog.set_version(__version__)
 aboutdialog.set_copyright(__copyright__)
-aboutdialog.set_wrap_license(True)
-aboutdialog.set_license(
-    "Green Recorder is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nGreen Recorder is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\nSee the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with Green Recorder. If not, see <http://www.gnu.org/licenses/>.")
-aboutdialog.set_comments(_("A simple screen recorder for Linux desktop. Supports Wayland & Xorg."))
 aboutdialog.set_authors(
     ['M.Hanny Sabbagh <mhsabbagh@outlook.com>', 'Alessandro Toia <gort818@gmail.com>',
      'Patreon Supporters: Ahmad Gharib, Medium,\nWilliam Grunow, Alex Benishek.'])
 aboutdialog.set_artists(['Mustapha Assabar'])
-aboutdialog.set_website("https://github.com/foss-project/green-recorder/")
-aboutdialog.set_logo_icon_name("green-recorder")
-windowgrabbutton.set_label(_("Select a Window"))
-areagrabbutton.set_label(_("Select an Area"))
-frametext.set_label(_("Frames:"))
-delaytext.set_label(_("Delay:"))
-commandtext.set_label(_("Run Command After Recording:"))
-audiosourcelabel.set_label(_("Audio Input Source:"))
 areachooser.connect("delete-event", hide_on_delete)
 frames.set_value(int(config.get('Options', 'frames')))
 delay.set_value(int(config.get('Options', 'delay')))
@@ -565,6 +525,10 @@ if "wayland" in DisplayServer:
 
 class Handler:
 
+    def show_about(self, GtkButton):
+        aboutdialog.run()
+        aboutdialog.hide()
+
     def recordclicked(self, GtkButton):
         record()
 
@@ -586,7 +550,6 @@ class Handler:
 
 
     def selectarea(self, GtkButton):
-        areachooser.set_title("Area Chooser")
         areachooser.show()
 
 

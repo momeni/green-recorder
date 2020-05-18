@@ -75,7 +75,7 @@ msgstr "Введите вашу команду здесь"
 
 #: ./green-recorder:385
 msgid "MKV (Matroska multimedia container format)"
-msgstr ""
+msgstr "MKV (Мультимедийный контейнер Матрёшка)"
 
 #: ./green-recorder:386
 msgid "AVI (Audio Video Interleaved)"
@@ -176,3 +176,5 @@ msgstr "Не короче:"
 #: ./green-recorder:502
 msgid "Don't save records with duration less than this number of seconds"
 msgstr "Не сохранять записи, длящиеся менее этого количества секунд"
+
+
