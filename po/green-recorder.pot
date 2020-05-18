@@ -156,3 +156,10 @@ msgstr ""
 msgid "Your area position has been saved!"
 msgstr ""
 
+msgid "Discard:"
+msgstr ""
+
+#: ./green-recorder:502
+msgid "Don't save records with duration less than this number of seconds"
+msgstr ""
+

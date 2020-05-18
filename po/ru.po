@@ -169,3 +169,10 @@ msgstr "Выбираем область"
 #: ./green-recorder:501
 msgid "Your area position has been saved!"
 msgstr "Позиция области сохранена!"
+
+msgid "Discard:"
+msgstr "Не короче:"
+
+#: ./green-recorder:502
+msgid "Don't save records with duration less than this number of seconds"
+msgstr "Не сохранять записи, длящиеся менее этого количества секунд"

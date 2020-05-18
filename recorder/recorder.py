@@ -82,10 +82,21 @@ else:
 
 # Localization.
 locale.setlocale(locale.LC_ALL, '')
-gettext.bindtextdomain('green-recorder', '/usr/share/locale')
+extra_locale_dirs = [
+    os.path.join(os.getcwd(), "locale"),
+]
+
+# this binds system translation
+gettext.bindtextdomain('green-recorder')
 gettext.textdomain('green-recorder')
-_ = gettext.gettext
-gettext.install("green-recorder", "/usr/share/locale")
+gettext.install("green-recorder")
+
+# if there is a translation in the current directory, use it
+for locale_dir in extra_locale_dirs:
+    if os.path.exists:
+        locale.bindtextdomain('green-recorder', locale_dir)
+        gettext.bindtextdomain('green-recorder', locale_dir)
+        gettext.install("green-recorder", locale_dir)
 
 # Define a loop and connect to the session bus. This is for Wayland recording under GNOME Shell.
 loop = GLib.MainLoop()
