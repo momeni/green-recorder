@@ -30,7 +30,13 @@ gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk, Gdk, GLib, AppIndicator3 as appindicator
 from pydbus import SessionBus
-import subprocess, signal, threading, datetime, gettext, locale, sys
+import subprocess
+import signal
+import threading
+import datetime
+import gettext
+import locale
+import sys
 
 # long story short, "configparser" Python 2 backports package is no good because it strips init py
 try:
@@ -55,7 +61,6 @@ config = ConfigParser()
 from timeit import default_timer as timer
 
 recording_time_start = None
-recording_time_end = None
 
 if not os.path.exists(confDir):
     os.makedirs(confDir)
@@ -108,11 +113,7 @@ RecorderDisplay = subprocess.check_output("xdpyinfo | grep 'dimensions:'|awk '{p
                                           shell=True)[:-1]
 DISPLAY = os.environ["DISPLAY"]
 
-try:
-    DisplayServer = os.environ["XDG_SESSION_TYPE"]
-except:
-    DisplayServer = "xorg"
-    pass  # Ok, cause it means user is using Xorg.
+DisplayServer = os.getenv('XDG_SESSION_TYPE', 'xorg')
 
 print("You are recording on: " + str(DisplayServer))
 
@@ -164,7 +165,7 @@ def recorderindicator():
     indicator.set_secondary_activate_target(stoprecordingbutton)
 
 
-def RecordXorg():
+def record_xorg():
     global DISPLAY, RecorderDisplay
     try:
         areaaxis
@@ -176,15 +177,15 @@ def RecordXorg():
 
     RecorderCommand = ["ffmpeg"]
 
-    if videoswitch.get_active() == True:
+    if videoswitch.get_active():
         RecorderCommand.append("-video_size")
         RecorderCommand.append(RecorderDisplay)
 
-        if mouseswitch.get_active() == True:
+        if mouseswitch.get_active():
             RecorderCommand.append("-draw_mouse")
             RecorderCommand.append("1")
 
-        if followmouseswitch.get_active() == True:
+        if followmouseswitch.get_active():
             RecorderCommand.append("-follow_mouse")
             RecorderCommand.append("centered")
 
@@ -195,7 +196,7 @@ def RecordXorg():
         RecorderCommand.append("-i")
         RecorderCommand.append(DISPLAY)
 
-    if audioswitch.get_active() == True:
+    if audioswitch.get_active():
         RecorderCommand.append("-f")
         RecorderCommand.append("pulse")
         RecorderCommand.append("-i")
@@ -227,7 +228,7 @@ def RecordXorg():
     t.start()
 
 
-def RecordGnome():
+def record_gnome():
     AudioRecording = []
 
     global RecorderPipeline
@@ -236,7 +237,7 @@ def RecordGnome():
         RecorderPipeline = "vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 deadline=1000000 threads=%T ! queue ! webmmux"
 
     global AudioProcess
-    if audioswitch.get_active() == True:
+    if audioswitch.get_active():
         AudioRecording.append("ffmpeg")
         AudioRecording.append("-f")
         AudioRecording.append("pulse")
@@ -249,7 +250,7 @@ def RecordGnome():
     else:
         AudioProcess = None
 
-    if videoswitch.get_active() == True:
+    if videoswitch.get_active():
         try:
             areaaxis
 
@@ -279,11 +280,12 @@ def RecordGnome():
 
 
 def stoprecording(_):
+    recordbutton.set_sensitive(True)
     time.sleep(1) # Wait ffmpeg.
     window.present()
 
     discard = False
-    global recording_time_start, recording_time_end, discard_adjustment
+    global recording_time_start, discard_adjustment
 
     if not recording_time_start:
         print('We were not recording...')
@@ -308,13 +310,13 @@ def stoprecording(_):
         pass  # Ok, cause it means user didn't select a window/area.
 
     if "xorg" in DisplayServer:
-        subprocess.call(["sleep", "1"])
+        time.sleep(1)
         RecorderProcess.terminate()
         indicator.set_status(appindicator.IndicatorStatus.PASSIVE)
 
 
     elif "gnomewayland" in DisplayServer:
-        subprocess.call(["sleep", "1"])
+        time.sleep(1)
         indicator.set_status(appindicator.IndicatorStatus.PASSIVE)
 
         try:
@@ -349,7 +351,7 @@ def stoprecording(_):
         subprocess.call(["mv", RecorderAbsPathName, RecorderAbsPathName + ".tmp"])
         subprocess.call(
             ["convert", "-layers", "Optimize", RecorderAbsPathName + ".tmp", RecorderAbsPathName])
-        subprocess.call(["rm", RecorderAbsPathName + ".tmp"])
+        os.remove(RecorderAbsPathName + ".tmp")
 
     window.present()
 
@@ -406,13 +408,14 @@ def record():
 
     subprocess.call(["sleep", RecorderDelay])
     stopbutton.set_sensitive(True)
+    recordbutton.set_sensitive(False)
 
     if "xorg" in DisplayServer:
-        RecordXorg()
+        record_xorg()
 
     # This is for GNOME compositor with Wayland.
     elif "gnomewayland" in DisplayServer:
-        RecordGnome()
+        record_gnome()
 
     else:
         sendnotification(_("Sorry Jim, looks like you are using something we don't support"), 3)
@@ -425,7 +428,8 @@ def hide_on_delete(widget, event):
 
 
 # Import the glade file and its widgets.
-builder = Gtk.Builder()
+builder = Gtk.Builder()  # type: Gtk.Builder
+
 # TODO: make configurable instead?
 possible_ui_file_locations = [
     os.path.join(os.getcwd(), "ui", "ui.glade"),
@@ -442,13 +446,13 @@ else:
              % "\n  ".join(possible_ui_file_locations))
 
 # Create pointers.
-window = builder.get_object("window1")
+window = builder.get_object("main_window")
 areachooser = builder.get_object("window2")
 aboutdialog = builder.get_object("aboutdialog")
 folderchooser = builder.get_object("filechooser")
 filename = builder.get_object("filename")
 command = builder.get_object("command")
-formatchooser = builder.get_object("comboboxtext1")
+formatchooser = builder.get_object("comboboxtext1")  # type: object
 audiosource = builder.get_object("audiosource")
 recordbutton = builder.get_object("recordbutton")
 stopbutton = builder.get_object("stopbutton")
@@ -456,7 +460,7 @@ windowgrabbutton = builder.get_object("button4")
 areagrabbutton = builder.get_object("button5")
 frames = builder.get_object("frames")
 delay = builder.get_object("delay")
-delayadjustment = builder.get_object("adjustment1")
+delay_adjustment = builder.get_object("delay_adjustment")
 framesadjustment = builder.get_object("adjustment2")
 delayprefadjustment = builder.get_object("adjustment3")
 discard_adjustment = builder.get_object("discard_adjustment")
@@ -472,7 +476,6 @@ areachooser.set_name("AreaChooser")
 
 window.connect("delete-event", Gtk.main_quit)
 formatchooser.set_active(0)
-aboutdialog.set_transient_for(window)
 aboutdialog.set_version(__version__)
 aboutdialog.set_copyright(__copyright__)
 aboutdialog.set_authors(
@@ -490,9 +493,6 @@ audioswitch.set_active(config.getboolean('Options', 'audiocheck'))
 mouseswitch.set_active(config.getboolean('Options', 'mousecheck'))
 followmouseswitch.set_active(config.getboolean('Options', 'followmousecheck'))
 command.set_text(config.get('Options', 'command'))
-
-stopbutton.set_sensitive(False)
-playbutton.set_sensitive(False)
 
 # Audio input sources
 audiosource.append("default", _("Default PulseAudio Input Source"))
@@ -524,6 +524,10 @@ if "wayland" in DisplayServer:
 
 
 class Handler:
+
+    def __init__(self):
+        pass
+
 
     def show_about(self, GtkButton):
         aboutdialog.run()

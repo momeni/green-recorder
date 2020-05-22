@@ -2,45 +2,6 @@
 <!-- Generated with glade 3.22.1 -->
 <interface domain="green-recorder">
   <requires lib="gtk+" version="3.16"/>
-  <object class="GtkAboutDialog" id="aboutdialog">
-    <property name="can_focus">False</property>
-    <property name="destroy_with_parent">True</property>
-    <property name="type_hint">dialog</property>
-    <property name="program_name">Green Recorder</property>
-    <property name="comments" translatable="yes">A simple screen recorder for Linux desktop. Supports Wayland &amp; Xorg.</property>
-    <property name="website">https://github.com/dvershinin/green-recorder</property>
-    <property name="website_label" translatable="yes">GitHub</property>
-    <property name="license" translatable="yes">Green Recorder is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nGreen Recorder is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\nSee the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with Green Recorder. If not, see &lt;http://www.gnu.org/licenses/&gt;.</property>
-    <property name="logo_icon_name">green-recorder</property>
-    <property name="wrap_license">True</property>
-    <child>
-      <placeholder/>
-    </child>
-    <child internal-child="vbox">
-      <object class="GtkBox" id="aboutdialog-vbox1">
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox" id="aboutdialog-action_area1">
-            <property name="can_focus">False</property>
-            <property name="homogeneous">True</property>
-            <property name="layout_style">end</property>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkAdjustment" id="adjustment1">
-    <property name="upper">10000</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">2</property>
-  </object>
   <object class="GtkAdjustment" id="adjustment2">
     <property name="lower">1</property>
     <property name="upper">200</property>
@@ -57,6 +18,11 @@
     <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="delay_adjustment">
+    <property name="upper">10000</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">2</property>
   </object>
   <object class="GtkAdjustment" id="discard_adjustment">
     <property name="upper">100</property>
@@ -77,6 +43,7 @@
   </object>
   <object class="GtkImage" id="stock-gtk-media-play">
     <property name="visible">True</property>
+    <property name="sensitive">False</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-media-play</property>
   </object>
@@ -85,7 +52,7 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-media-stop</property>
   </object>
-  <object class="GtkWindow" id="window1">
+  <object class="GtkWindow" id="main_window">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="opacity">0.99999999977648257</property>
@@ -112,6 +79,7 @@
         <child>
           <object class="GtkButton" id="stopbutton">
             <property name="visible">True</property>
+            <property name="sensitive">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="image">stock-gtk-media-stop</property>
@@ -416,7 +384,7 @@
                     <property name="can_focus">True</property>
                     <property name="max_width_chars">2</property>
                     <property name="text" translatable="yes">0</property>
-                    <property name="adjustment">adjustment1</property>
+                    <property name="adjustment">delay_adjustment</property>
                     <property name="climb_rate">1</property>
                     <signal name="value-changed" handler="delaychanged" swapped="no"/>
                   </object>
@@ -478,7 +446,7 @@
               <object class="GtkEntry" id="command">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Use $1 to substitute filename of the saved recording</property>
+                <property name="tooltip_markup" translatable="yes">Use &lt;b&gt;$1&lt;/b&gt; to substitute filename of the saved recording</property>
                 <property name="margin_top">5</property>
                 <property name="margin_bottom">5</property>
                 <property name="hexpand">True</property>
@@ -534,6 +502,41 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">6</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAboutDialog" id="aboutdialog">
+    <property name="can_focus">False</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="transient_for">main_window</property>
+    <property name="program_name">Green Recorder</property>
+    <property name="comments" translatable="yes">A simple screen recorder for Linux desktop. Supports Wayland &amp; Xorg.</property>
+    <property name="website">https://github.com/dvershinin/green-recorder</property>
+    <property name="website_label" translatable="yes">GitHub</property>
+    <property name="license" translatable="yes">Green Recorder is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nGreen Recorder is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\nSee the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with Green Recorder. If not, see &lt;http://www.gnu.org/licenses/&gt;.</property>
+    <property name="logo_icon_name">green-recorder</property>
+    <property name="wrap_license">True</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="aboutdialog-vbox1">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="aboutdialog-action_area1">
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <property name="layout_style">end</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
       </object>
