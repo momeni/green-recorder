@@ -83,7 +83,7 @@ else:
     config.set('Options', 'audiocheck', 'True')
     config.set('Options', 'mousecheck', 'True')
     config.set('Options', 'followmousecheck', 'False')
-    with open(confFile, 'wb') as confFile2:
+    with open(confFile, 'w') as confFile2:
         config.write(confFile2)
 
 # Localization.
