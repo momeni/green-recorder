@@ -168,6 +168,7 @@
                 <property name="margin_top">5</property>
                 <property name="margin_bottom">5</property>
                 <property name="action">select-folder</property>
+                <property name="title" translatable="yes">Select a Directory</property>
                 <signal name="selection-changed" handler="folderchosen" swapped="no"/>
               </object>
               <packing>

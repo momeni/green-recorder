@@ -65,26 +65,14 @@ recording_time_start = None
 if not os.path.exists(confDir):
     os.makedirs(confDir)
 
+VideosFolder = GLib.get_user_special_dir(GLib.USER_DIRECTORY_VIDEOS)
+if VideosFolder is None:
+    VideosFolder = os.environ['HOME']
+
 if os.path.isfile(confFile):
     config.read(confFile)
-else:
-    VideosFolder = GLib.get_user_special_dir(GLib.USER_DIRECTORY_VIDEOS)
-    if VideosFolder is None:
-        VideosFolder = os.environ['HOME']
-
+if not config.has_section('Options'):
     config.add_section('Options')
-    config.set('Options', 'frames', '30')
-    config.set('Options', 'delay', '0')
-    config.set('Options', 'discard', '10')
-    config.set('Options', 'folder', "file://" + VideosFolder)
-    config.set('Options', 'command', '')
-    config.set('Options', 'filename', '')
-    config.set('Options', 'videocheck', 'True')
-    config.set('Options', 'audiocheck', 'True')
-    config.set('Options', 'mousecheck', 'True')
-    config.set('Options', 'followmousecheck', 'False')
-    with open(confFile, 'w') as confFile2:
-        config.write(confFile2)
 
 # Localization.
 locale.setlocale(locale.LC_ALL, '')
@@ -483,16 +471,16 @@ aboutdialog.set_authors(
      'Patreon Supporters: Ahmad Gharib, Medium,\nWilliam Grunow, Alex Benishek.'])
 aboutdialog.set_artists(['Mustapha Assabar'])
 areachooser.connect("delete-event", hide_on_delete)
-frames.set_value(int(config.get('Options', 'frames')))
-delay.set_value(int(config.get('Options', 'delay')))
-discard_adjustment.set_value(int(config.get('Options', 'discard')))
-filename.set_text(config.get('Options', 'filename'))
-folderchooser.set_uri(config.get('Options', 'folder'))
-videoswitch.set_active(config.getboolean('Options', 'videocheck'))
-audioswitch.set_active(config.getboolean('Options', 'audiocheck'))
-mouseswitch.set_active(config.getboolean('Options', 'mousecheck'))
-followmouseswitch.set_active(config.getboolean('Options', 'followmousecheck'))
-command.set_text(config.get('Options', 'command'))
+frames.set_value(config.getint('Options', 'frames', fallback=30))
+delay.set_value(config.getint('Options', 'delay', fallback=0))
+discard_adjustment.set_value(config.getint('Options', 'discard', fallback=10))
+filename.set_text(config.get('Options', 'filename', fallback=''))
+folderchooser.set_uri(config.get('Options', 'folder', fallback="file://" + VideosFolder))
+videoswitch.set_active(config.getboolean('Options', 'videocheck', fallback=True))
+audioswitch.set_active(config.getboolean('Options', 'audiocheck', fallback=True))
+mouseswitch.set_active(config.getboolean('Options', 'mousecheck', fallback=False))
+followmouseswitch.set_active(config.getboolean('Options', 'followmousecheck', fallback=False))
+command.set_text(config.get('Options', 'command', fallback=''))
 
 # Audio input sources
 audiosource.append("default", _("Default PulseAudio Input Source"))
