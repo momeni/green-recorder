@@ -38,7 +38,7 @@ import gettext
 import locale
 import sys
 
-# long story short, "configparser" Python 2 backports package is no good because it strips init py
+# long story short, "configparser" Python 2 backport RPM package is no good because it strips init py
 try:
     # Python 3
     from configparser import ConfigParser

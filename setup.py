@@ -26,7 +26,8 @@ install_requires = [
     'pydbus',
     'PyGObject',
     'appdirs',
-    'configparser>=3.7.1',
+    # long story short, "configparser" Python 2 backport RPM package is no good because it strips init py
+    # 'configparser>=3.7.1',
 ]
 tests_requires = ["pytest>=4.4.0", "flake8", "pytest-xdist"]
 
