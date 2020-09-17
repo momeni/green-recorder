@@ -113,22 +113,23 @@ else:
     DisplayServer = "xorg"
 
 
-def sendnotification(text, time):
+def send_notification(text, time):
     notifications = bus.get('.Notifications')
     notifications.Notify('GreenRecorder', 0, 'green-recorder', "Green Recorder", text, [], {},
                          time * 1000)
 
 
-def checkStatus():
+def check_status():
     os.system("sleep 3")
     if not os.path.isfile(RecorderAbsPathName):
         window.present()
-        sendnotification(_(
-            "There seems to be a problem in recording. Try running 'green-recorder' from the command line to see the issue."),
-                         4)
+        send_notification(_(
+            "There seems to be a problem in recording. Try running 'green-recorder' from the "
+            "command line to see the issue."),
+            4)
 
 
-def recorderindicator():
+def recorder_indicator():
     # Create the app indicator widget.
     global indicator
     try:
@@ -145,7 +146,7 @@ def recorderindicator():
 
     menu = Gtk.Menu()
     stoprecordingbutton = Gtk.MenuItem(label=_('Stop Recording'))
-    stoprecordingbutton.connect('activate', stoprecording)
+    stoprecordingbutton.connect('activate', stop_recording)
     menu.append(stoprecordingbutton)
     menu.show_all()
 
@@ -209,9 +210,9 @@ def record_xorg():
 
     window.iconify()
     Gdk.flush()
-    recorderindicator()
+    recorder_indicator()
 
-    t = threading.Thread(target=checkStatus)
+    t = threading.Thread(target=check_status)
     t.daemon = True
     t.start()
 
@@ -222,7 +223,8 @@ def record_gnome():
     global RecorderPipeline
 
     if formatchooser.get_active_id() == "webm":
-        RecorderPipeline = "vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 deadline=1000000 threads=%T ! queue ! webmmux"
+        RecorderPipeline = "vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 " \
+                           "deadline=1000000 threads=%T ! queue ! webmmux"
 
     global AudioProcess
     if audioswitch.get_active():
@@ -260,16 +262,18 @@ def record_gnome():
     Gdk.flush()
     traythread = threading.RLock()
     with traythread:
-        recorderindicator()
+        recorder_indicator()
 
-    t = threading.Thread(target=checkStatus)
+    t = threading.Thread(target=check_status)
     t.daemon = True
     t.start()
 
 
-def stoprecording(_):
+def stop_recording(_):
+    # nothing to play and nothing to stop
+    stopbutton.set_sensitive(False)
+    time.sleep(1)  # Wait ffmpeg.
     recordbutton.set_sensitive(True)
-    time.sleep(1) # Wait ffmpeg.
     window.present()
 
     discard = False
@@ -280,15 +284,14 @@ def stoprecording(_):
 
     recording_time = timer() - recording_time_start
 
-    if recording_time  < discard_adjustment.get_value():
+    if recording_time < discard_adjustment.get_value():
         print('Shorter than ' + str(discard_adjustment.get_value()) + ' secs, discarding')
         discard = True
-        # nothing to play and nothing to stop
-        stopbutton.set_sensitive(False)
     else:
         print('Recording time ' + str(recording_time) + ' secs. Not too short, saved')
         # TODO save indicator and make sensitive on save only
         playbutton.set_sensitive(True)
+        delete_button.set_sensitive(True)
     recording_time_start = None
 
     try:
@@ -301,8 +304,6 @@ def stoprecording(_):
         time.sleep(1)
         RecorderProcess.terminate()
         indicator.set_status(appindicator.IndicatorStatus.PASSIVE)
-
-
     elif "gnomewayland" in DisplayServer:
         time.sleep(1)
         indicator.set_status(appindicator.IndicatorStatus.PASSIVE)
@@ -332,9 +333,10 @@ def stoprecording(_):
             k = subprocess.Popen(["mv", "/tmp/Green-recorder-tmp.mkv", RecorderAbsPathName])
 
     if formatchooser.get_active_id() == "gif":
-        sendnotification(_(
-            "Your GIF image is currently being processed, this may take a while according to your PC's resources."),
-                         5)
+        send_notification(_(
+            "Your GIF image is currently being processed, this may take a while according to your"
+            " PC's resources."),
+            5)
 
         subprocess.call(["mv", RecorderAbsPathName, RecorderAbsPathName + ".tmp"])
         subprocess.call(
@@ -390,7 +392,8 @@ def record():
             datetime.datetime.now()) + '.' + formatchooser.get_active_id())
     else:
         RecorderFullPathName = unquote(
-            folderchooser.get_uri() + '/' + filename.get_text() + '.' + formatchooser.get_active_id())
+            folderchooser.get_uri() + '/' + filename.get_text() + '.' +
+            formatchooser.get_active_id())
 
     RecorderAbsPathName = RecorderFullPathName.replace("file://", "")
 
@@ -406,7 +409,7 @@ def record():
         record_gnome()
 
     else:
-        sendnotification(_("Sorry Jim, looks like you are using something we don't support"), 3)
+        send_notification(_("Sorry Jim, looks like you are using something we don't support"), 3)
         window.present()
 
 
@@ -453,6 +456,7 @@ framesadjustment = builder.get_object("adjustment2")
 delayprefadjustment = builder.get_object("adjustment3")
 discard_adjustment = builder.get_object("discard_adjustment")
 playbutton = builder.get_object("playbutton")
+delete_button = builder.get_object("delete_button")
 videoswitch = builder.get_object("videoswitch")
 audioswitch = builder.get_object("audioswitch")
 mouseswitch = builder.get_object("mouseswitch")
@@ -521,6 +525,7 @@ class Handler:
         aboutdialog.run()
         aboutdialog.hide()
 
+
     def recordclicked(self, GtkButton):
         record()
 
@@ -538,7 +543,7 @@ class Handler:
         WindowWidth = areaaxis[2]
         WindowHeight = areaaxis[3]
 
-        sendnotification(_("Your window position has been saved!"), 3)
+        send_notification(_("Your window position has been saved!"), 3)
 
 
     def selectarea(self, GtkButton):
@@ -546,10 +551,17 @@ class Handler:
 
 
     def stoprecordingclicked(self, GtkButton):
-        stoprecording(_)
+        stop_recording(_)
+
 
     def playbuttonclicked(self, GtkButton):
         subprocess.call(["xdg-open", unquote(RecorderAbsPathName)])
+
+
+    def delete_button_clicked_cb(self, GtkButton):
+        os.remove(RecorderAbsPathName)
+        playbutton.set_sensitive(False)
+        delete_button.set_sensitive(False)
 
 
     def areasettings(self, GtkButton):
@@ -567,7 +579,7 @@ class Handler:
         WindowHeight = areaaxis[3] - 80
 
         areachooser.hide()
-        sendnotification(_("Your area position has been saved!"), 3)
+        send_notification(_("Your area position has been saved!"), 3)
 
 
     def frameschanged(self, GtkSpinButton):
@@ -583,11 +595,13 @@ class Handler:
         with open(confFile, 'w+') as newconfFile:
             config.write(newconfFile)
 
+
     def discard_changed(self, GtkSpinButton):
         config.set('Options', 'discard', str(int(float(discard_adjustment.get_value()))))
         global confFile
         with open(confFile, 'w+') as newconfFile:
             config.write(newconfFile)
+
 
     def filenamechanged(self, GtkEntry):
         config.set('Options', 'filename', unquote(filename.get_text()))
