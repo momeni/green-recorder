@@ -427,6 +427,7 @@ possible_ui_file_locations = [
     "/usr/share/green-recorder/ui.glade",
     "/usr/local/share/green-recorder/ui.glade",
     os.path.join(os.path.dirname(__file__), "ui", "ui.glade"),
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), "share", "green-recorder", "ui.glade"),
 ]
 for filename in possible_ui_file_locations:
     if os.path.exists(filename):
