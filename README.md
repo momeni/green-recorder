@@ -35,8 +35,35 @@ Alternatively, you can open the green-recorder.pot file using programs like PoEd
 
 ### CentOS/RHEL 8
 
-    sudo yum -y install https://extras.getpagespeed.com/release-latest.rpm
-    sudo yum install green-recorder
+On RHEL 8 it is required to enable the `codeready-builder-for-rhel-8-*-rpms` repository since EPEL 
+packages may depend on packages from it:
+
+```bash
+ARCH=$( /bin/arch )
+subscription-manager repos --enable "codeready-builder-for-rhel-8-${ARCH}-rpms"
+```
+
+On CentOS 8 it is required to enable the powertools repository since EPEL packages may depend on 
+packages from it:
+
+```bash
+dnf -y install dnf-plugins-core
+dnf config-manager --set-enabled powertools
+# or, on older CentOS 8 releases:
+dnf config-manager --set-enabled PowerTools
+```
+
+After that, proceed to install Green Recorder:
+
+```bash
+# Generally required repo:
+dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+# For ffmpeg dependency
+dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
+# For the Green Recorder package
+dnf -y install https://extras.getpagespeed.com/release-latest.rpm    
+dnf -y install green-recorder
+```
 
 ### Ubuntu 18.04/18.10/19.04 or Linux Mint 19/19.1
 
