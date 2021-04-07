@@ -225,7 +225,8 @@ def record_gnome():
     if formatchooser.get_active_id() == "webm":
         RecorderPipeline = "vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 " \
                            "deadline=1000000 threads=%T ! queue ! webmmux"
-
+    elif formatchooser.get_active_id() == "mp4":
+        RecorderPipeline = "x264enc pass=qual quantizer=0 speed-preset=ultrafast ! queue ! mp4mux"
     global AudioProcess
     if audioswitch.get_active():
         AudioRecording.append("ffmpeg")
@@ -513,6 +514,7 @@ if "wayland" in DisplayServer:
     formatchooser.remove_all()
 
     formatchooser.append("webm", "WebM (The Open WebM Format)")
+    formatchooser.append("mp4", "MP4 (MPEG-4 Part 14)")
     formatchooser.set_active(0)
 
 

@@ -109,6 +109,7 @@ along with green-recorder.  If not, see <http://www.gnu.org/licenses/>.
             <property name="sensitive">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Stop recording</property>
             <property name="image">stock-gtk-media-stop</property>
             <property name="always_show_image">True</property>
             <signal name="clicked" handler="stoprecordingclicked" swapped="no"/>
@@ -136,6 +137,7 @@ along with green-recorder.  If not, see <http://www.gnu.org/licenses/>.
             <property name="sensitive">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Deletes the last recording</property>
             <property name="image">stock-gtk-delete</property>
             <property name="always_show_image">True</property>
             <signal name="clicked" handler="delete_button_clicked_cb" swapped="no"/>
