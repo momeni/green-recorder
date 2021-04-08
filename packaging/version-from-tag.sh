@@ -10,7 +10,6 @@ else
   VER=0
 fi
 
-cd packaging/rhel
 PKG=$(basename *.spec .spec)
 
 sed -i "s@Version:.*@Version:        ${VER}@" "${PKG}.spec"
