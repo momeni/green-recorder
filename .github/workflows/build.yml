@@ -10,7 +10,7 @@ jobs:
       image: getpagespeed/rpmbuilder:centos-8
     steps:
     - uses: actions/checkout@v2
-    - name: What OS is running
-      run: uname -a
+    - name: Set up release-like archive from checkout
+      run: packaging/version-from-tag.sh
     - name: Build the .spec file
-      run: build
+      run: cd packaging/rhel && build
