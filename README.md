@@ -103,12 +103,12 @@ You can simply download it and install the dependencies on your distribution:
 * For Debian systems: gir1.2-appindicator3, gawk, python-gobject, python-urllib3, x11-utils, ffmpeg, pydbus, pulseaudio, xdg-open (or xdg-utils), python-configparser, imagemagick
 * For RPM based systems: python3 python3-pip python3-gobject-base python3-pydbus gettext libappindicator-gtk3 ffmpeg
 
-And then to install Green Recorder for current user, run:
+[Do *not* run pip as root](https://www.getpagespeed.com/server-setup/do-not-run-pip-as-root).  
+
+To install Green Recorder for current user, run *without* `sudo`:
 
     pip3 install --user .
     
-[Do *not* run pip as root](https://www.getpagespeed.com/server-setup/do-not-run-pip-as-root).    
-
 ## License
 
 The program is released under GPL 3.
