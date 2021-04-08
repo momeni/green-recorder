@@ -92,13 +92,22 @@ You can install Green recorder using your [AUR helper](https://wiki.archlinux.or
 
 ### Other Distributions
 
-The program requires the pydbus python module, install it first:
+The program supports Python 2.7 and Python >= 3.6.
 
-    sudo pip install pydbus
+**It is highly discouraged to install using source code. Use packages instead, where available.**
+
+
+The source code is available to download via: [ZIP archive](https://github.com/dvershinin/green-recorder/archive/master.zip). 
+You can simply download it and install the dependencies on your distribution:
+
+* For Debian systems: gir1.2-appindicator3, gawk, python-gobject, python-urllib3, x11-utils, ffmpeg, pydbus, pulseaudio, xdg-open (or xdg-utils), python-configparser, imagemagick
+* For RPM based systems: python3 python3-pip python3-gobject-base python3-pydbus gettext libappindicator-gtk3 ffmpeg
+
+And then to install Green Recorder for current user, run:
+
+    pip3 install --user .
     
-The source code is available to download via: [https://github.com/green-project/green-recorder/archive/master.zip](https://github.com/green-project/green-recorder/archive/master.zip). You can simply download it and install the dependencies on your distribution (gir1.2-appindicator3, gawk, python-gobject, python-urllib3, x11-utils, ffmpeg, pydbus, pulseaudio, xdg-open (or xdg-utils), python-configparser, imagemagick). And then run: 
-
-    sudo python setup.py install
+[Do *not* run pip as root](https://www.getpagespeed.com/server-setup/do-not-run-pip-as-root).    
 
 ## License
 

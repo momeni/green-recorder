@@ -16,7 +16,7 @@
 
 import os
 import time
-
+from .prefix import prefix
 from .__about__ import __version__, __copyright__
 
 # Force GDK backend to be X11 because Wayland applications are not allowed to
@@ -421,15 +421,13 @@ def hide_on_delete(widget, event):
 
 # Import the glade file and its widgets.
 builder = Gtk.Builder()  # type: Gtk.Builder
+install_prefix = prefix()
+possible_ui_file_locations = []
+if os.getenv('VIRTUAL_ENV'):
+    possible_ui_file_locations.append(os.path.join(os.getcwd(), "ui", "ui.glade"))
+elif install_prefix:
+    possible_ui_file_locations.append(install_prefix + "/share/green-recorder/ui.glade")
 
-# TODO: make configurable instead?
-possible_ui_file_locations = [
-    os.path.join(os.getcwd(), "ui", "ui.glade"),
-    "/usr/share/green-recorder/ui.glade",
-    "/usr/local/share/green-recorder/ui.glade",
-    os.path.join(os.path.dirname(__file__), "ui", "ui.glade"),
-    os.path.join(os.path.dirname(os.path.dirname(__file__)), "share", "green-recorder", "ui.glade"),
-]
 for filename in possible_ui_file_locations:
     if os.path.exists(filename):
         builder.add_from_file(filename)
