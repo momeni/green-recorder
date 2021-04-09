@@ -112,6 +112,26 @@ if "wayland" in DisplayServer:
 else:
     DisplayServer = "xorg"
 
+# Import the glade file and its widgets.
+builder = Gtk.Builder()  # type: Gtk.Builder
+install_prefix = prefix()
+possible_ui_file_locations = []
+app_indicator_icon = ''
+if os.getenv('VIRTUAL_ENV'):
+    possible_ui_file_locations.append(
+        os.path.join(os.path.dirname(os.getenv('VIRTUAL_ENV')), "ui", "ui.glade"))
+    app_indicator_icon = os.path.join(os.path.dirname(os.getenv('VIRTUAL_ENV')), "data", "green-recorder.png")
+elif install_prefix:
+    possible_ui_file_locations.append(install_prefix + "/share/green-recorder/ui.glade")
+    app_indicator_icon = install_prefix + "/share/green-recorder/green-recorder.png"
+
+for filename in possible_ui_file_locations:
+    if os.path.exists(filename):
+        builder.add_from_file(filename)
+        break
+else:
+    sys.exit("Did not find ui.glade.  Tried\n  %s"
+             % "\n  ".join(possible_ui_file_locations))
 
 def send_notification(text, time):
     notifications = bus.get('.Notifications')
@@ -135,9 +155,10 @@ def recorder_indicator():
     try:
         s = subprocess.check_output("ps -cat|grep mate-panel", shell=True)
     except:
-        indicator = appindicator.Indicator.new("Green Recorder",
-                                               '/usr/share/pixmaps/green-recorder.png',
-                                               appindicator.IndicatorCategory.APPLICATION_STATUS)
+        indicator = appindicator.Indicator.new(
+            "Green Recorder",
+            app_indicator_icon,
+            appindicator.IndicatorCategory.APPLICATION_STATUS)
         pass
     else:
         indicator = appindicator.Indicator.new("Green Recorder", 'green-recorder',
@@ -418,23 +439,6 @@ def hide_on_delete(widget, event):
     widget.hide()
     return True
 
-
-# Import the glade file and its widgets.
-builder = Gtk.Builder()  # type: Gtk.Builder
-install_prefix = prefix()
-possible_ui_file_locations = []
-if os.getenv('VIRTUAL_ENV'):
-    possible_ui_file_locations.append(os.path.join(os.getcwd(), "ui", "ui.glade"))
-elif install_prefix:
-    possible_ui_file_locations.append(install_prefix + "/share/green-recorder/ui.glade")
-
-for filename in possible_ui_file_locations:
-    if os.path.exists(filename):
-        builder.add_from_file(filename)
-        break
-else:
-    sys.exit("Did not find ui.glade.  Tried\n  %s"
-             % "\n  ".join(possible_ui_file_locations))
 
 # Create pointers.
 window = builder.get_object("main_window")
