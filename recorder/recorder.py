@@ -123,7 +123,7 @@ if os.getenv('VIRTUAL_ENV'):
     app_indicator_icon = os.path.join(os.path.dirname(os.getenv('VIRTUAL_ENV')), "data", "green-recorder.png")
 elif install_prefix:
     possible_ui_file_locations.append(install_prefix + "/share/green-recorder/ui.glade")
-    app_indicator_icon = install_prefix + "/share/green-recorder/green-recorder.png"
+    app_indicator_icon = install_prefix + "/share/pixmaps/green-recorder.png"
 
 for filename in possible_ui_file_locations:
     if os.path.exists(filename):
