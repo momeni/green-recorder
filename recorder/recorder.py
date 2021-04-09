@@ -447,7 +447,7 @@ aboutdialog = builder.get_object("aboutdialog")
 folderchooser = builder.get_object("filechooser")
 filename = builder.get_object("filename")
 command = builder.get_object("command")
-formatchooser = builder.get_object("comboboxtext1")  # type: object
+formatchooser = builder.get_object("format_chooser_combo_box")  # type: Gtk.ComboBoxText
 audiosource = builder.get_object("audiosource")
 recordbutton = builder.get_object("recordbutton")
 stopbutton = builder.get_object("stopbutton")
@@ -472,6 +472,7 @@ areachooser.set_name("AreaChooser")
 
 window.connect("delete-event", Gtk.main_quit)
 formatchooser.set_active(0)
+formatchooser.set_active_id(config.get('Options', 'format', fallback=''))
 aboutdialog.set_version(__version__)
 aboutdialog.set_copyright(__copyright__)
 aboutdialog.set_authors(
@@ -517,7 +518,9 @@ if "wayland" in DisplayServer:
 
     formatchooser.append("webm", "WebM (The Open WebM Format)")
     formatchooser.append("mp4", "MP4 (MPEG-4 Part 14)")
+    # required to at least select something by default
     formatchooser.set_active(0)
+    formatchooser.set_active_id(config.get('Options', 'format', fallback=''))
 
 
 class Handler:
@@ -568,6 +571,11 @@ class Handler:
         playbutton.set_sensitive(False)
         delete_button.set_sensitive(False)
 
+    def format_changed_cb(self, format_chooser):
+        config.set('Options', 'format', str(format_chooser.get_active_id()))
+        global confFile
+        with open(confFile, 'w+') as newconfFile:
+            config.write(newconfFile)
 
     def areasettings(self, GtkButton):
         output = subprocess.check_output(

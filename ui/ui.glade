@@ -228,7 +228,7 @@ along with green-recorder.  If not, see <http://www.gnu.org/licenses/>.
           </packing>
         </child>
         <child>
-          <object class="GtkComboBoxText" id="comboboxtext1">
+          <object class="GtkComboBoxText" id="format_chooser_combo_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_left">10</property>
@@ -243,6 +243,7 @@ along with green-recorder.  If not, see <http://www.gnu.org/licenses/>.
               <item id="gif" translatable="yes">GIF (Graphics Interchange Format)</item>
               <item id="nut" translatable="yes">NUT (NUT Recording Format)</item>
             </items>
+            <signal name="changed" handler="format_changed_cb" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
