@@ -234,13 +234,15 @@ along with green-recorder.  If not, see <http://www.gnu.org/licenses/>.
             <property name="margin_right">10</property>
             <property name="margin_top">5</property>
             <property name="margin_bottom">5</property>
+            <property name="active_id">mp4</property>
             <items>
               <item id="mkv" translatable="yes">MKV (Matroska multimedia container format)</item>
               <item id="avi" translatable="yes">AVI (Audio Video Interleaved)</item>
-              <item id="mp4" translatable="yes">MP4 (MPEG-4 Part 14)</item>
               <item id="wmv" translatable="yes">WMV (Windows Media Video)</item>
               <item id="gif" translatable="yes">GIF (Graphics Interchange Format)</item>
               <item id="nut" translatable="yes">NUT (NUT Recording Format)</item>
+              <item id="mp4" translatable="yes">MP4 (MPEG-4 Part 14)</item>
+              <item id="webm" translatable="yes">WebM (The Open WebM Format)</item>
             </items>
             <signal name="changed" handler="format_changed_cb" swapped="no"/>
           </object>
