@@ -10,11 +10,15 @@ jobs:
       image: getpagespeed/rpmbuilder:centos-8
     steps:
     - uses: actions/checkout@v2
-    - name: Ensure /sources are symlinked to this directory
-      run: cp -aR ./* /sources/
+
     - name: Copy spec to root
       run: pwd; cp packaging/rhel/*.spec ./; ls -al
+
     - name: Set up release-like archive from checkout
       run: pwd; packaging/version-from-tag.sh; ls -al
+
+    - name: Ensure /sources are symlinked to this directory
+      run: cp -aR ./* /sources/
+
     - name: Build the .spec file
-      run: pwd; ls -al; build
+      run: pwd; ls -al; cd /sources/ && build
