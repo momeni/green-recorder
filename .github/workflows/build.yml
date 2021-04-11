@@ -8,6 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: getpagespeed/rpmbuilder:centos-8
+    defaults:
+      run:
+        working-directory: /sources
     steps:
     - uses: actions/checkout@v2
     - name: Copy spec to root
