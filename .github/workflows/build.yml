@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Ensure /sources are symlinked to this directory
-      run: rm -rf /sources && ln -fs $(pwd) /sources
+      run: cp -aR ./* /sources/
     - name: Copy spec to root
       run: pwd; cp packaging/rhel/*.spec ./; ls -al
     - name: Set up release-like archive from checkout
