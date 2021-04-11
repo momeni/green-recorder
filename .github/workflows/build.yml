@@ -1,10 +1,10 @@
-name: Super-Linter
+name: Build Packages
 
 # Run this workflow every time a new commit pushed to your repository
 on: push
 
 jobs:
-  testbox:
+  build:
     runs-on: ubuntu-latest
     container:
       image: getpagespeed/rpmbuilder:centos-8
@@ -22,3 +22,7 @@ jobs:
 
     - name: Build the .spec file
       run: mkdir -p /github/home/rpmbuild/{SOURCES,SPECS}/; pwd; ls -al; cd /sources/ && pwd && ls -al &&  build
+  deploy:
+    on:
+      release:
+        types: [published]
