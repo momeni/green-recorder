@@ -22,7 +22,3 @@ jobs:
 
     - name: Build the .spec file
       run: mkdir -p /github/home/rpmbuild/{SOURCES,SPECS}/; pwd; ls -al; cd /sources/ && pwd && ls -al &&  build
-  deploy:
-    on:
-      release:
-        types: [published]

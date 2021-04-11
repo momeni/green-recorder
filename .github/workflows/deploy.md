@@ -8,7 +8,7 @@ on:
     types: [published]      
 
 jobs:
-  job1:
+  deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Test
