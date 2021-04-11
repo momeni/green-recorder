@@ -8,11 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: getpagespeed/rpmbuilder:centos-8
-    defaults:
-      run:
-        working-directory: /sources
     steps:
     - uses: actions/checkout@v2
+    - name: Ensure /sources are symlinked to this directory
+      run: rm -rf /sources && ln -fs $(pwd) /sources
     - name: Copy spec to root
       run: pwd; cp packaging/rhel/*.spec ./; ls -al
     - name: Set up release-like archive from checkout
