@@ -37,6 +37,7 @@ import datetime
 import gettext
 import locale
 import sys
+import pwd
 
 # long story short, "configparser" Python 2 backport RPM package is no good because it strips init py
 try:
@@ -345,9 +346,13 @@ def stop_recording(_):
             return window.present()
 
         if videoswitch.get_active() and audioswitch.get_active():
+            user_full_name = pwd.getpwuid(os.getuid()).pw_gecos
             m = subprocess.call(
-                ["ffmpeg", "-i", RecorderFullPathName, "-i", "/tmp/Green-recorder-tmp.mkv", "-c",
-                 "copy", "/tmp/Green-Recorder-Final." + formatchooser.get_active_id(), "-y"])
+                ["ffmpeg",
+                 "-i", RecorderFullPathName, "-i", "/tmp/Green-recorder-tmp.mkv", "-c",
+                 "copy",
+                 "-metadata", 'artist={}'.format(user_full_name),
+                 "/tmp/Green-Recorder-Final." + formatchooser.get_active_id(), "-y"])
             k = subprocess.Popen(
                 ["mv", "/tmp/Green-Recorder-Final." + formatchooser.get_active_id(),
                  RecorderAbsPathName])
@@ -442,7 +447,7 @@ def hide_on_delete(widget, event):
 
 # Create pointers.
 window = builder.get_object("main_window")
-areachooser = builder.get_object("window2")
+area_chooser = builder.get_object("area_chooser_window")
 aboutdialog = builder.get_object("aboutdialog")
 folderchooser = builder.get_object("filechooser")
 filename = builder.get_object("filename")
@@ -468,7 +473,7 @@ followmouseswitch = builder.get_object("followmouseswitch")
 
 # Assign the texts to the interface
 window.set_title(_("Green Recorder"))
-areachooser.set_name("AreaChooser")
+area_chooser.set_name("AreaChooser")
 
 window.connect("delete-event", Gtk.main_quit)
 formatchooser.set_active(0)
@@ -479,7 +484,7 @@ aboutdialog.set_authors(
     ['M.Hanny Sabbagh <mhsabbagh@outlook.com>', 'Alessandro Toia <gort818@gmail.com>',
      'Patreon Supporters: Ahmad Gharib, Medium,\nWilliam Grunow, Alex Benishek.'])
 aboutdialog.set_artists(['Mustapha Assabar'])
-areachooser.connect("delete-event", hide_on_delete)
+area_chooser.connect("delete-event", hide_on_delete)
 frames.set_value(config.getint('Options', 'frames', fallback=30))
 delay.set_value(config.getint('Options', 'delay', fallback=0))
 discard_adjustment.set_value(config.getint('Options', 'discard', fallback=10))
@@ -514,10 +519,8 @@ audiosource.set_active(0)
 if "wayland" in DisplayServer:
     windowgrabbutton.set_sensitive(False)
     followmouseswitch.set_sensitive(False)
-    formatchooser.remove_all()
-
-    formatchooser.append("webm", "WebM (The Open WebM Format)")
-    formatchooser.append("mp4", "MP4 (MPEG-4 Part 14)")
+    for i in range(5):
+        formatchooser.remove(0)
     # required to at least select something by default
     formatchooser.set_active(0)
     formatchooser.set_active_id(config.get('Options', 'format', fallback=''))
@@ -555,12 +558,10 @@ class Handler:
 
 
     def selectarea(self, GtkButton):
-        areachooser.show()
-
+        area_chooser.show()
 
     def stoprecordingclicked(self, GtkButton):
         stop_recording(_)
-
 
     def playbuttonclicked(self, GtkButton):
         subprocess.call(["xdg-open", unquote(RecorderAbsPathName)])
@@ -578,9 +579,9 @@ class Handler:
             config.write(newconfFile)
 
     def areasettings(self, GtkButton):
-        output = subprocess.check_output(
-            ["xwininfo -name \"Area Chooser\" | grep -e Width -e Height -e Absolute"], shell=True)[
-                 :-1]
+        win_title = _('Area Chooser')
+        cmd = 'xwininfo -name "{}" | grep -e Width -e Height -e Absolute'.format(win_title)
+        output = subprocess.check_output([cmd], shell=True)[:-1]
 
         global areaaxis
         areaaxis = [int(l.split(':')[1]) for l in output.decode('UTF-8', 'ignore').split('\n')]
@@ -591,7 +592,7 @@ class Handler:
         WindowWidth = areaaxis[2] - 24
         WindowHeight = areaaxis[3] - 80
 
-        areachooser.hide()
+        area_chooser.hide()
         send_notification(_("Your area position has been saved!"), 3)
 
 

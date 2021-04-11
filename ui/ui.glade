@@ -588,7 +588,7 @@ along with green-recorder.  If not, see <http://www.gnu.org/licenses/>.
       </object>
     </child>
   </object>
-  <object class="GtkWindow" id="window2">
+  <object class="GtkWindow" id="area_chooser_window">
     <property name="can_focus">False</property>
     <property name="hexpand">True</property>
     <property name="vexpand">True</property>
