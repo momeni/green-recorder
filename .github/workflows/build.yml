@@ -13,6 +13,6 @@ jobs:
     - name: Copy spec to root
       run: pwd; cp packaging/rhel/*.spec ./; ls -al
     - name: Set up release-like archive from checkout
-      run: packaging/version-from-tag.sh; ls -al
+      run: pwd; packaging/version-from-tag.sh; ls -al
     - name: Build the .spec file
-      run: ls -al; build
+      run: pwd; ls -al; build
