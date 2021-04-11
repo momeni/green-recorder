@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Copy spec to root
-      run: cp packaging/rhel/*.spec ./; ls -al
+      run: pwd; cp packaging/rhel/*.spec ./; ls -al
     - name: Set up release-like archive from checkout
       run: packaging/version-from-tag.sh; ls -al
     - name: Build the .spec file
