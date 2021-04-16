@@ -325,7 +325,8 @@ def stop_recording(_):
 
     if "xorg" in DisplayServer:
         time.sleep(1)
-        RecorderProcess.terminate()
+        # RecorderProcess.terminate()
+        RecorderProcess.communicate(str.encode("q"), timeout=5)
         indicator.set_status(appindicator.IndicatorStatus.PASSIVE)
     elif "gnomewayland" in DisplayServer:
         time.sleep(1)
@@ -334,7 +335,8 @@ def stop_recording(_):
         try:
             GNOMEScreencast.StopScreencast()
             if AudioProcess:
-                AudioProcess.terminate()
+                # AudioProcess.terminate()
+                AudioProcess.communicate(str.encode("q"), timeout=5)
         except Exception as e:
             print(e)
 
