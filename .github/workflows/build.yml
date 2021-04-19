@@ -1,18 +1,24 @@
-name: Super-Linter
+name: Build Packages
 
 # Run this workflow every time a new commit pushed to your repository
 on: push
 
 jobs:
-  testbox:
+  build:
     runs-on: ubuntu-latest
     container:
       image: getpagespeed/rpmbuilder:centos-8
     steps:
     - uses: actions/checkout@v2
+
     - name: Copy spec to root
-      run: cp packaging/rhel/*.spec ./; ls -al
+      run: pwd; cp packaging/rhel/*.spec ./; ls -al
+
     - name: Set up release-like archive from checkout
-      run: packaging/version-from-tag.sh; ls -al
+      run: pwd; packaging/version-from-tag.sh; ls -al
+
+    - name: Ensure /sources are symlinked to this directory
+      run: cp -aR ./* /sources/
+
     - name: Build the .spec file
-      run: ls -al; build
+      run: mkdir -p /github/home/rpmbuild/{SOURCES,SPECS}/; pwd; ls -al; cd /sources/ && pwd && ls -al &&  build
