@@ -6,7 +6,7 @@ Summary: A simple yet functional desktop recorder for Linux systems. Supports bo
 URL: https://github.com/dvershinin/green-recorder
 Version: 3.2.9
 Release: 1%{?dist}
-Source: %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+Source: %{url}/archive/%{version}/v%{version}.tar.gz
 License: GPLv3
 BuildArch: noarch
 BuildRequires: python3
@@ -149,4 +149,4 @@ A simple desktop recorder for Linux systems. Supports both Xorg server and Wayla
 - new package built with tito
 
 * Tue Feb 14 2017 M.Hanny Sabbagh <mhsabbagh@outlook.com> 1.1.2
-- Version 1.1.2. 
+- Version 1.1.2.
