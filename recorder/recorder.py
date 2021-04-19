@@ -501,19 +501,17 @@ command.set_text(config.get('Options', 'command', fallback=''))
 # Audio input sources
 audiosource.append("default", _("Default PulseAudio Input Source"))
 try:
-    audiosourcesnames = subprocess.check_output("pacmd list-sources | grep -e device.description",
-                                                shell=True)
-    audiosourcesids = subprocess.check_output("pacmd list-sources | grep -e device.string",
-                                              shell=True)
+    audio_source_names = subprocess.check_output("pactl list sources | grep -e device.description",
+                                                 shell=True)
 except Exception as e:
     print(e)
-audiosourcesnames = audiosourcesnames.split(b"\n")[:-1]
+audio_source_names = audio_source_names.split(b"\n")[:-1]
 
-for i in range(len(audiosourcesnames)):
-    audiosourcesnames[i] = audiosourcesnames[i].replace(b"\t\tdevice.description = ", b"")
-    audiosourcesnames[i] = audiosourcesnames[i].replace(b'"', b"")
+for i in range(len(audio_source_names)):
+    audio_source_names[i] = audio_source_names[i].replace(b"\t\tdevice.description = ", b"")
+    audio_source_names[i] = audio_source_names[i].replace(b'"', b"")
 
-    audiosource.append(str(i), audiosourcesnames[i].decode('UTF-8', 'replace'))
+    audiosource.append(str(i), audio_source_names[i].decode('UTF-8', 'replace'))
 
 audiosource.set_active(0)
 

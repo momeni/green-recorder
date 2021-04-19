@@ -19,7 +19,7 @@ Requires: ffmpeg
 Requires: gawk
 Requires: libappindicator-gtk3
 Requires: python3-urllib3
-Requires: pulseaudio
+Requires: pulseaudio pulseaudio-utils
 Requires: ImageMagick
 Requires: xdg-utils
 
