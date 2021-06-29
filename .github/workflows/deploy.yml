@@ -10,6 +10,9 @@ on:
 
 jobs:
   deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: getpagespeed/rpmbuilder:centos-8
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Test
