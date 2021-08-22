@@ -76,7 +76,7 @@ dnf -y install https://extras.getpagespeed.com/release-latest.rpm
 dnf -y install green-recorder
 ```
 
-### Ubuntu 18.04/18.10/19.04 or Linux Mint 19/19.1
+### Ubuntu 18.04/18.10/19.04 (NOT 20.04 or later) or Linux Mint 19/19.1
 
 Make sure you have enabled the multiverse and universe repositories before trying to install the program from the PPA (to be able to download the dependencies). You can install Green Recorder from the following PPA:
 
@@ -100,7 +100,9 @@ The program supports Python 2.7 and Python >= 3.6.
 The source code is available to download via: [ZIP archive](https://github.com/dvershinin/green-recorder/archive/master.zip). 
 You can simply download it and install the dependencies on your distribution:
 
-* For Debian systems: gir1.2-appindicator3, gawk, python-gobject, python-urllib3, x11-utils, ffmpeg, pydbus, pulseaudio, xdg-open (or xdg-utils), python-configparser, imagemagick
+* For Debian systems: 
+    * via apt (debian packages): gawk, x11-utils, ffmpeg, pulseaudio, xdg-open (or xdg-utils), imagemagick
+    * via pip3 (python packages): gir1.2-appindicator3-0.1, gobject, urllib3,  pydbus, configparser
 * For RPM based systems: python3 python3-pip python3-gobject-base python3-pydbus gettext libappindicator-gtk3 ffmpeg
 
 [Do *not* run pip as root](https://www.getpagespeed.com/server-setup/do-not-run-pip-as-root).  
