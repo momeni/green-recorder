@@ -46,7 +46,7 @@ def prefix(join=None):
         # to match: /usr/lib/python2.5/site-packages/project/prefix.py
         # or: /usr/local/lib/python2.6/dist-packages/project/prefix.py
         lambda x: x == 'lib',
-        lambda x: x == ('python%s' % sys.version[:3]),
+        lambda x: x == f"python{sys.version_info.major}.{sys.version_info.minor}",
         lambda x: x in ['site-packages', 'dist-packages'],
         lambda x: x == name,    # 'project'
         lambda x: x == this,    # 'prefix.py'
